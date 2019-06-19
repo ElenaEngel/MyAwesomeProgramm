@@ -10,7 +10,7 @@ import org.testng.annotations.*;
 import static org.testng.Assert.assertEquals;
 
 
-public class GoogleTest {
+public class GoogleTestDataProvider {
     WebDriver driver;
     @BeforeSuite
     public void beforeSuite() {
@@ -28,42 +28,23 @@ public class GoogleTest {
         driver.close();
     }
 
+    @DataProvider(name = "addMethodDataProvider")
+     public Object[][] dataProvider() {
+     return new Object[][] {{"portnov computer school", true}, { "#@#@!$!!#!@!", false}, {"портнов компьютерная школа", true} };
+     }
 
-    @Test
+     @Test(dataProvider = "addMethodDataProvider")
 
-    public void test001(){
-        String queryText = "portnov computer school";
+      public void testQuery(String testQuery, boolean result) {
 
-        openPage();
-        typeIn(queryText);
-        waitForElement();
-        assertResult();
 
-    }
+         openPage();
+         typeIn(testQuery);
+         waitForElement();
+         assertResult(result);
+       }
 
-    @Test
 
-    public void test002(){
-        String queryText = "#@#@!$!!#!@!";
-
-        openPage();
-        typeIn(queryText);
-        waitForElement();
-        assertResult();
-
-    }
-
-    @Test
-
-    public void test003(){
-        String queryText = "портнов компьютерная школа";
-
-        openPage();
-        typeIn(queryText);
-        waitForElement();
-        assertResult();
-
-    }
 
     private void waitForElement(){
 
@@ -71,10 +52,10 @@ public class GoogleTest {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"resultStats\"]")));
     }
 
-    private void assertResult(){
+    private void assertResult(boolean isDisplayed){
         WebElement getResult = driver.findElement(By.xpath("//*[@id=\"resultStats\"]"));
 
-        assertEquals(getResult.isDisplayed(), true);
+       assertEquals(getResult.isDisplayed(), isDisplayed);
 
     }
 
@@ -84,16 +65,12 @@ public class GoogleTest {
 
         driver.get(url);}
 
-
-
     private void typeIn(String typeInText) {
         WebElement searchInput = driver.findElement(By.xpath("//*[@id=\"tsf\"]/div[2]/div/div[1]/div/div[1]/input"));
         searchInput.sendKeys(typeInText);
         searchInput.submit();
 
     }
-
-
 
 
 
